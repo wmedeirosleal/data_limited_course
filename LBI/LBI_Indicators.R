@@ -38,7 +38,7 @@ library(readr)
 #==============================================================================
 
 source("https://raw.githubusercontent.com/ices-tools-dev/LBIndicator_shiny/master/utilities.R")
-source("/Users/wendellmedeirosleal/Documents/Curso UFPA/LBI/lbi_table.R")
+source("https://raw.githubusercontent.com/wmedeirosleal/data_limited_course/main/LBI/lbi_table.R")
 
 #==============================================================================
 # 5. Parâmetros do estudo
