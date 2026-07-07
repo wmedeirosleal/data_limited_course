@@ -39,9 +39,8 @@ library(readr)
 
 source("https://raw.githubusercontent.com/ices-tools-dev/LBIndicator_shiny/master/utilities.R")
 source("https://raw.githubusercontent.com/wmedeirosleal/data_limited_course/main/LBI/lbi_table.R")
+source("https://raw.githubusercontent.com/wmedeirosleal/data_limited_course/main/LBI/lbi_plot.R")
 
-source("/Users/wendellmedeirosleal/Documents/Curso UFPA/Data-Limited Course/dls_course/LBI/lbi_table.R")
-source("/Users/wendellmedeirosleal/Documents/Curso UFPA/Data-Limited Course/dls_course/LBI/lbi_plot.R")
 
 #==============================================================================
 # 5. Parâmetros do estudo
@@ -86,7 +85,7 @@ freq_to_weight <- function(df, a, b){
 }
 
 SBR_Wal <- freq_to_weight(
-  PAR_Freq,
+  SBR_Freq,
   a = a,
   b = b
 )
@@ -98,7 +97,7 @@ head(SBR_Wal)
 #==============================================================================
 
 LBI_results <- lb_ind(
-  data     = PAR_Freq,
+  data     = SBR_Freq,
   binwidth = binwidth,
   linf     = Linf,
   lmat     = Lmat,
@@ -117,7 +116,7 @@ pdf("LBI_plot.pdf", width = 10, height = 12)
 
 
 lb_plot_all(
-  data = PAR_Freq,
+  data = SBR_Freq,
   binwidth = binwidth,
   l_units = "cm",
   linf = Linf,
@@ -137,7 +136,7 @@ dev.off()
 
 
 Tabela <- lb_table(
-  data = PAR_Freq,
+  data = SBR_Freq,
   binwidth = binwidth,
   l_units = "cm",
   linf = Linf,
