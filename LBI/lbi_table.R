@@ -43,6 +43,39 @@ lb_table <- function(data,
   # Build table
   #------------------------------------------------------------
   
+  #------------------------------------------------------------
+  # Reference levels (with labels for table)
+  #------------------------------------------------------------
+  
+  ref_level <- c(
+    Lc_Lmat    = 1,
+    L25_Lmat   = 1,
+    Lmax5_Linf = 0.8,
+    Pmega      = 0.3,
+    Lmean_Lopt = 0.9,
+    Lmean_LFeM = 1
+  )
+  
+  ref_label <- c(
+    Lc_Lmat    = ">1.00",
+    L25_Lmat   = ">1.00",
+    Lmax5_Linf = ">0.80",
+    Pmega      = ">0.30",
+    Lmean_Lopt = "≈0.90",
+    Lmean_LFeM = "≥1.00"
+  )
+  
+  #------------------------------------------------------------
+  # Years
+  #------------------------------------------------------------
+  
+  years <- seq(max(Ind$Year, na.rm = TRUE) - 2,
+               max(Ind$Year, na.rm = TRUE))
+  
+  #------------------------------------------------------------
+  # Build main table
+  #------------------------------------------------------------
+  
   tab <- Ind |>
     dplyr::filter(Year %in% years) |>
     dplyr::select(
@@ -58,6 +91,29 @@ lb_table <- function(data,
       Year = as.integer(Year),
       dplyr::across(-Year, ~round(.x, 2))
     )
+  
+  tab <- dplyr::mutate(tab, dplyr::across(everything(), as.character))
+  #------------------------------------------------------------
+  # 🔥 NEW: reference row (INSERTED BELOW HEADER)
+  #------------------------------------------------------------
+  
+  ref_row <- as.data.frame(
+    as.list(c(
+      "Reference",
+      ">1.00",
+      ">1.00",
+      ">0.80",
+      ">0.30",
+      "≈0.90",
+      "≥1.00"
+    ))
+  )
+  
+  names(ref_row) <- names(tab)
+  
+  # bind row on top
+  tab$Year <- as.character(tab$Year)
+  tab <- dplyr::bind_rows(ref_row, tab)
   
   #------------------------------------------------------------
   # Flextable
@@ -92,10 +148,27 @@ lb_table <- function(data,
   # Style
   #------------------------------------------------------------
   
-  ft <- flextable::theme_booktabs(ft)
-  ft <- flextable::bold(ft, part = "header")
-  ft <- flextable::align(ft, align = "center", part = "all")
-  ft <- flextable::bg(ft, part = "header", bg = "#E8EAEA")
+  header_bg <- "#E8EAEA"
+  
+  ft <- flextable::bg(
+    ft,
+    i = 1,
+    bg = header_bg,
+    part = "body"
+  )
+  
+  ft <- flextable::bold(
+    ft,
+    i = 1,
+    part = "body"
+  )
+  
+  ft <- flextable::border(
+    ft,
+    i = 1,
+    border.bottom = fp_border(color = "black", width = 1.5),
+    part = "body"
+  )
   
   #------------------------------------------------------------
   # Conditional colors (robusto)
@@ -112,14 +185,25 @@ lb_table <- function(data,
     
     ft <- flextable::bg(
       ft,
+      i = 2:nrow(tab),   # <-- somente linhas de dados
       j = column,
       bg = ifelse(
-        !is.na(tab[[column]]) & tab[[column]] >= threshold,
+        as.numeric(tab[[column]][2:nrow(tab)]) >= threshold,
         green,
         red
       )
     )
   }
+  
+  # Sobrescreve a linha Reference
+  ft <- flextable::bg(
+    ft,
+    i = 1,
+    bg = "#E8EAEA",
+    part = "body"
+  )
+  
+  ft <- flextable::bold(ft, i = 1, part = "body")
   
   #------------------------------------------------------------
   # Formatting
