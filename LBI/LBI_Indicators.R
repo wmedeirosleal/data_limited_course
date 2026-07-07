@@ -5,7 +5,7 @@
 #                                                                             #
 # Adaptado de: Wendell Medeiros-Leal                                          #
 # GitHub: https://github.com/ices-tools-dev/LBIndicator_shiny                 #
-#                                                                             #
+# GitHub: https://github.com/wmedeirosleal/data_limited_course                #                                                                            #
 ###############################################################################
 
 #==============================================================================
