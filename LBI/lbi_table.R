@@ -120,6 +120,13 @@ lb_table <- function(data,
   #------------------------------------------------------------
   
   ft <- flextable::flextable(tab)
+
+  ## Add Header row ##
+  ft <- flextable::add_header_row(ft, values = c("", "Conservation", "Optimizing Yield", "MSY"),
+  colwidths = c(1, 4, 1, 1))  
+    ft <- flextable::align(ft, i = 1, part = "header", align = "center")
+    ft <- flextable::bold(ft, i = 1, part = "header")
+    ft <- flextable::bg(ft, i = 1, part = "header", bg = "#E8EAEA")
   
   # 🔥 FIX DEFINITIVO DO ANO (sem separador de milhar)
   ft <- flextable::colformat_num(
