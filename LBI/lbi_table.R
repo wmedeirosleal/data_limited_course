@@ -113,8 +113,10 @@ lb_table <- function(data,
   
   # bind row on top
   tab$Year <- as.character(tab$Year)
-  tab <- dplyr::bind_rows(ref_row, tab)
-  
+  tab <- dplyr::bind_rows(tab, ref_row)
+
+  ref_i  <- nrow(tab)            # last row = reference
+  data_i <- seq_len(ref_i - 1)   # all rows except last
   #------------------------------------------------------------
   # Flextable
   #------------------------------------------------------------
@@ -159,20 +161,20 @@ lb_table <- function(data,
   
   ft <- flextable::bg(
     ft,
-    i = 1,
+    i = ref_i,
     bg = header_bg,
     part = "body"
   )
   
   ft <- flextable::bold(
     ft,
-    i = 1,
+    i = ref_1,
     part = "body"
   )
   
   ft <- flextable::border(
     ft,
-    i = 1,
+    i = ref_1,
     border.bottom = fp_border(color = "black", width = 1.5),
     part = "body"
   )
@@ -192,12 +194,9 @@ lb_table <- function(data,
     
     ft <- flextable::bg(
       ft,
-      i = 2:nrow(tab),   # <-- somente linhas de dados
+      i = data_i,   # <-- somente linhas de dados
       j = column,
-      bg = ifelse(
-        as.numeric(tab[[column]][2:nrow(tab)]) >= threshold,
-        green,
-        red
+      bg = ifelse(vals >= threshold, green, red
       )
     )
   }
