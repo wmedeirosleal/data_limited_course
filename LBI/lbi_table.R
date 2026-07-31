@@ -4,7 +4,7 @@ lb_table <- function(data,
                      linf,
                      lmat,
                      mk_ratio,
-                     weight){
+                     weight) {
   
   #------------------------------------------------------------
   # Calculate indicators
@@ -18,30 +18,13 @@ lb_table <- function(data,
     mk_ratio = mk_ratio,
     weight = weight
   )
-  
-  #------------------------------------------------------------
-  # Reference levels
-  #------------------------------------------------------------
-  
-  ref_level <- c(
-    Lc_Lmat    = 1,
-    L25_Lmat   = 1,
-    Lmax5_Linf = 0.8,
-    Pmega      = 0.3,
-    Lmean_Lopt = 0.9,
-    Lmean_LFeM = 1
-  )
-  
+    
   #------------------------------------------------------------
   # Years
   #------------------------------------------------------------
   
   years <- seq(max(Ind$Year, na.rm = TRUE) - 2,
                max(Ind$Year, na.rm = TRUE))
-  
-  #------------------------------------------------------------
-  # Build table
-  #------------------------------------------------------------
   
   #------------------------------------------------------------
   # Reference levels (with labels for table)
@@ -55,22 +38,6 @@ lb_table <- function(data,
     Lmean_Lopt = 0.9,
     Lmean_LFeM = 1
   )
-  
-  ref_label <- c(
-    Lc_Lmat    = ">1.00",
-    L25_Lmat   = ">1.00",
-    Lmax5_Linf = ">0.80",
-    Pmega      = ">0.30",
-    Lmean_Lopt = "≈0.90",
-    Lmean_LFeM = "≥1.00"
-  )
-  
-  #------------------------------------------------------------
-  # Years
-  #------------------------------------------------------------
-  
-  years <- seq(max(Ind$Year, na.rm = TRUE) - 2,
-               max(Ind$Year, na.rm = TRUE))
   
   #------------------------------------------------------------
   # Build main table
@@ -93,30 +60,15 @@ lb_table <- function(data,
     )
   
   tab <- dplyr::mutate(tab, dplyr::across(everything(), as.character))
-  #------------------------------------------------------------
-  # 🔥 NEW: reference row (INSERTED BELOW HEADER)
-  #------------------------------------------------------------
-  
-  ref_row <- as.data.frame(
-    as.list(c(
-      "Reference",
-      ">1.00",
-      ">1.00",
-      ">0.80",
-      ">0.30",
-      "≈0.90",
-      "≥1.00"
-    ))
-  )
-  
-  names(ref_row) <- names(tab)
   
   # bind row on top
   tab$Year <- as.character(tab$Year)
-  tab <- dplyr::bind_rows(tab, ref_row)
+ 
 
-  ref_i  <- nrow(tab)            # last row = reference
-  data_i <- seq_len(ref_i - 1)   # all rows except last
+
+ 
+  data_i <- seq_len(nrow(tab))   # sequence of all data rows 
+  
   #------------------------------------------------------------
   # Flextable
   #------------------------------------------------------------
@@ -126,9 +78,9 @@ lb_table <- function(data,
   ## Add Header row ##
   ft <- flextable::add_header_row(ft, values = c("", "Conservation", "Optimizing Yield", "MSY"),
   colwidths = c(1, 4, 1, 1))  
-    ft <- flextable::align(ft, i = 1, part = "header", align = "center")
-    ft <- flextable::bold(ft, i = 1, part = "header")
-    ft <- flextable::bg(ft, i = 1, part = "header", bg = "#E8EAEA")
+   
+    ft <- flextable::bold(ft, part = "header")
+    ft <- flextable::bg(ft, part = "header", bg = "#E8EAEA")
   
   # 🔥 FIX DEFINITIVO DO ANO (sem separador de milhar)
   ft <- flextable::colformat_num(
@@ -144,13 +96,21 @@ lb_table <- function(data,
   
   ft <- flextable::set_header_labels(
     ft,
-    Year = "Year",
-    Lc_Lmat = "Lc/Lmat",
-    L25_Lmat = "L25/Lmat",
-    Lmax5_Linf = "Lmax5/Linf",
+    Year = "",
+    Lc_Lmat = "Lc / Lmat",
+    L25_Lmat = "L25% / Lmat",
+    Lmax5_Linf = "Lmax5% / Linf",
     Pmega = "Pmega",
-    Lmean_Lopt = "Lmean/Lopt",
-    Lmean_LFeM = "Lmean/LF=M"
+    Lmean_Lopt = "Lmean / Lopt",
+    Lmean_LFeM = "Lmean / LF=M"
+  )
+
+# Add Reference header row 
+  ft <- flextable::add_header_row(
+  ft,
+  values = c("Reference", ">1.00", ">1.00", ">0.80", ">0.30", "≈0.90", "≥1.00"),
+  colwidths = rep(1, 7),
+  top = FALSE
   )
   
   #------------------------------------------------------------
@@ -159,24 +119,11 @@ lb_table <- function(data,
   
   header_bg <- "#E8EAEA"
   
-  ft <- flextable::bg(
-    ft,
-    i = ref_i,
-    bg = header_bg,
-    part = "body"
-  )
-  
-  ft <- flextable::bold(
-    ft,
-    i = ref_1,
-    part = "body"
-  )
-  
   ft <- flextable::border(
     ft,
-    i = ref_1,
+    i = 3,
     border.bottom = fp_border(color = "black", width = 1.5),
-    part = "body"
+    part = "header"
   )
   
   #------------------------------------------------------------
@@ -191,7 +138,7 @@ lb_table <- function(data,
   for (column in cols) {
     
     threshold <- ref_level[[column]]
-    
+    vals <- suppressWarnings(as.numeric(tab[[column]][data_i]))
     ft <- flextable::bg(
       ft,
       i = data_i,   # <-- somente linhas de dados
@@ -201,15 +148,7 @@ lb_table <- function(data,
     )
   }
   
-  # Sobrescreve a linha Reference
-  ft <- flextable::bg(
-    ft,
-    i = 1,
-    bg = "#E8EAEA",
-    part = "body"
-  )
   
-  ft <- flextable::bold(ft, i = 1, part = "body")
   
   #------------------------------------------------------------
   # Formatting
@@ -218,6 +157,8 @@ lb_table <- function(data,
   ft <- flextable::fontsize(ft, size = 10, part = "all")
   ft <- flextable::font(ft, fontname = "Calibri", part = "all")
   ft <- flextable::autofit(ft)
-  
+  ft <- flextable::align(ft, align = "center", part = "all")
+  ft <- flextable::border(ft, i = nrow(tab), border.bottom = fp_border(color = "black", width = 1.5), part = "body")
+ 
   return(ft)
 }
