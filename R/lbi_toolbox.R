@@ -29,7 +29,8 @@ lb_plot_freq <- function(
     pivot_longer(
       cols = -all_of(length_name),
       names_to = "Year",
-      values_to = "Count"
+      values_to = "Count",
+      names_prefix = "X"
     ) %>%
     rename(Length = all_of(length_name))
 
