@@ -2,6 +2,9 @@
 library(ggplot2)
 library (tidyverse)
 library(gridExtra)
+library(reshape2)
+library(flextable)
+library(dplyr)
 
 #___
 # 1 | lb_plot_freq()
