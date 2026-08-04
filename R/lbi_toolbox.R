@@ -5,6 +5,7 @@ library(gridExtra)
 library(reshape2)
 library(flextable)
 library(dplyr)
+library(officer)
 
 #___
 # 1 | lb_plot_freq()
