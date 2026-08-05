@@ -548,10 +548,15 @@ lbi_report <- function(
   title = "Length Based Indicators",
   intro_text = "This report summarizes the LBI results.",
   stock.name = species,
+  lmat = Lmat,
+  linf = Linf,
   lbiplot = plots.LBI,
   lab1 = "Indicator trends",
   tab = status_table,
-  lab2 = "Indicator status for the most recent three years",
+  a_val = a,
+  b_val = b,
+  mkratio = MK_ratio,
+  lab2 = "Indicator status for study years",
   plot1 = p1
 ) {
   # ---- checks ----
@@ -577,6 +582,11 @@ lbi_report <- function(
   report_env <- new.env(parent = globalenv())
   report_env$intro_text <- intro_text
   report_env$stock.name <- stock.name
+  report_env$lmat <- lmat
+  report_env$linf <- linf
+  report_env$a_val <- a_val
+  report_env$b_val <- b_val
+  report_env$mkratio <- mkratio
   report_env$lbiplot <- lbiplot
   report_env$lab1 <- lab1
   report_env$tab <- tab
@@ -605,19 +615,32 @@ lbi_report <- function(
     "",
     "# `r title`",
     "",
-    "`r intro_text`",
+    "`r intro_text`  ",
     "",
-    "Stock name: *`r stock.name`*",
+    "",
+    "**Stock name:** *`r stock.name`*",
+    "",
+    "**Input values/parameters:**  ",
+    "a = `r a_val`  ",
+    "b = `r b_val`  ",
+    "Linf = `r linf`  ",
+    "Lmat = `r lmat`  ",
+    "MK ratio = `r mkratio`  ",
+    "",
+    "**Table 1:** Selected indicators for LBI screening plots. Indicator ratios in bold used for stock status assessment with traffic light system. ",
+    "",
+    "```{r fig0, echo=FALSE}",
+    "knitr::include_graphics('https://raw.githubusercontent.com/wmedeirosleal/data_limited_course/main/LBI/indicators_tab.png')",
+    "```",
     "",
     "```{r fig1, fig.width=10, fig.height=8}",
     "grid::grid.newpage()",
     "grid::grid.draw(plot(lbiplot))",
     "```",
     "",
-    "**Figure 1:** `r lab1`",
-    "\\vspace{\\baselineskip}",
+    "**Figure 1:** `r lab1`  ",
     "",
-    "**Table 1:** `r lab2`",
+    "**Table 2:** `r lab2`",
     "",
     "```{r tab1}",
     "tab",
@@ -660,6 +683,7 @@ lbi_report <- function(
 
   invisible(final_path)
 }
+
 
 ## END ##
 
