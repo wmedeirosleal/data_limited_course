@@ -19,7 +19,6 @@ lb_plot_freq <- function(
   x_lab = "Length (cm)",
   y_lab = "Count",
   fill_col = "#595959",
-  border_col = "#d8d9da"
   bin = 1,
   boundary= 0.5
 ) {
