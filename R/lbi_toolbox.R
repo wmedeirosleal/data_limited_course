@@ -20,6 +20,8 @@ lb_plot_freq <- function(
   y_lab = "Count",
   fill_col = "#595959",
   border_col = "#d8d9da"
+  bin = 1,
+  boundary= 0.5
 ) {
   # length column name
   length_name <- names(df)[length_col]
@@ -32,18 +34,27 @@ lb_plot_freq <- function(
       values_to = "Count",
       names_prefix = "X"
     ) %>%
-    rename(Length = all_of(length_name))
+    rename(Length = all_of(length_name)) %>%
+    mutate(
+      Length = as.numeric(Length),
+      Year   = as.factor(Year),
+      Count  = as.numeric(Count))
 
   # plot
-  ggplot(df_long, aes(x = Length, y = Count)) +
-    geom_col(fill = fill_col, col = border_col, width = 1) +
-    facet_wrap(~Year, ncol = ncol, scales = "fixed") +
-    theme_minimal() +
+  ggplot(df_long, aes(x = Length, weight = Count)) +
+  geom_histogram(
+      binwidth = bin,
+      fill = fill_col,
+      color = "white",
+      boundary = boundary
+    ) +
+  facet_wrap(~Year, ncol = ncol, scales = "fixed") +
+  theme_bw() +
     theme(
       strip.text = element_text(face = "bold", size = 10),
       strip.background = element_rect(fill = "#d8d9da", color = NA)
     ) +
-    labs(x = x_lab, y = y_lab)
+  labs(x = x_lab, y = y_lab)
 }
 ####--------------------####
 
