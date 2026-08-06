@@ -369,7 +369,8 @@ lb_table <- function(
   linf,
   lmat,
   mk_ratio,
-  weight
+  weight,
+  last_years = 3
 ) {
   #------------------------------------------------------------
   # Calculate indicators
@@ -388,7 +389,7 @@ lb_table <- function(
   # Years
   #------------------------------------------------------------
 
-  years <- seq(max(Ind$Year, na.rm = TRUE) - 2, max(Ind$Year, na.rm = TRUE))
+  years <- seq(max(Ind$Year, na.rm = TRUE) - (last_years-1), max(Ind$Year, na.rm = TRUE))
 
   #------------------------------------------------------------
   # Reference levels (with labels for table)
@@ -545,7 +546,6 @@ lb_table <- function(
 lbi_report <- function(
   output_file = "LBI_report.docx",
   output_dir = getwd(),
-  title = "Length Based Indicators",
   intro_text = "This report summarizes the LBI results.",
   stock.name = species,
   lmat = Lmat,
@@ -591,7 +591,6 @@ lbi_report <- function(
   report_env$lab1 <- lab1
   report_env$tab <- tab
   report_env$lab2 <- lab2
-  report_env$title <- title
   report_env$plot1 <- plot1
 
   # temp files
@@ -613,7 +612,7 @@ lbi_report <- function(
     "knitr::opts_chunk$set(echo = FALSE, warning = FALSE, message = FALSE)",
     "```",
     "",
-    "# `r title`",
+    "# Length Based Indicators",
     "",
     "`r intro_text`  ",
     "",
