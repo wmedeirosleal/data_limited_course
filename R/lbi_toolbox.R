@@ -1,8 +1,6 @@
 ##libraries
 library(ggplot2)
-library (tidyverse)
 library(gridExtra)
-library(reshape2)
 library(flextable)
 library(dplyr)
 library(officer)
@@ -27,14 +25,14 @@ lb_plot_freq <- function(
 
   # long format
   df_long <- df %>%
-    pivot_longer(
+   tidyr::pivot_longer(
       cols = -all_of(length_name),
       names_to = "Year",
       values_to = "Count",
       names_prefix = "X"
     ) %>%
-    rename(Length = all_of(length_name)) %>%
-    mutate(
+    dplyr::rename(Length = all_of(length_name)) %>%
+    dplyr::mutate(
       Length = as.numeric(Length),
       Year   = as.factor(Year),
       Count  = as.numeric(Count))
