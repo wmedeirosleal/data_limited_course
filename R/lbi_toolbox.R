@@ -45,10 +45,10 @@ lb_plot_freq <- function(
       color = "white",
       boundary = boundary
     ) +
-  facet_wrap(~Year, ncol = ncol, scales = "fixed") +
+  facet_wrap(~Year, ncol = ncol, scales = "free") +
   theme_bw() +
     theme(
-      strip.text = element_text(face = "bold", size = 10),
+      strip.text = element_text(face = "bold", size = 5),
       strip.background = element_rect(fill = "#d8d9da", color = NA)
     ) +
   labs(x = x_lab, y = y_lab)
