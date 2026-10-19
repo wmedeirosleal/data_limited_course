@@ -130,10 +130,8 @@ dev.off()
 
 
 #==============================================================================
-# 11. Tabela (traffic ligth) os indicadores LBI
+# 10. Tabela (traffic ligth) os indicadores LBI
 #==============================================================================
-
-
 
 Tabela <- lb_table(
   data = SBR_Freq,
@@ -156,7 +154,7 @@ print(doc, target = "LBI_Table.docx")
 
 
 #==============================================================================
-# 10. Exportar resultados
+# 11. Exportar resultados
 #==============================================================================
 
 write_excel_csv(
@@ -166,7 +164,18 @@ write_excel_csv(
 )
 
 #==============================================================================
-# 10. Fim
+# 12. Criação de um Relatório dos dados como output 
+#==============================================================================
+lbi_report(
+  output_file = "LBI_report.docx",
+  stock.name = species,
+  plot.freq = p1,
+  plot.LBI = plot.LBI,
+  tab = status_table
+)
+
+#==============================================================================
+# 13. Fim
 #==============================================================================
 
 message("Análise concluída com sucesso!")
